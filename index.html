@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>SMAK Decoration Lights</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+  padding-bottom: 35px;
+}
+
+header {
+  padding: 22px 18px;
+  background: #172338;
+  border-bottom: 1px solid #29384d;
+}
+
+.brand {
+  color: #ffc857;
+  font-size: 25px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.tagline {
+  color: #aab7c9;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 18px;
+}
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.badge {
+  background: #234b39;
+  color: #62e69d;
+  border-radius: 20px;
+  padding: 7px 12px;
+  font-size: 11px;
+}
+
+.card {
+  background: #1b293e;
+  border: 1px solid #304057;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 17px;
+}
+
+h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+h3 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #e3eaf5;
+}
+
+.main-light {
+  background: linear-gradient(135deg,#263b58,#18263a);
+  border-radius: 15px;
+  padding: 22px;
+  text-align: center;
+}
+
+#preview {
+  height: 90px;
+  width: 90px;
+  margin: 15px auto;
+  border-radius: 50%;
+  background: #ff3030;
+  box-shadow: 0 0 35px #ff303088;
+  transition: 0.3s;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.power {
+  background: #ffc857;
+  color: #111827;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.power.off {
+  background: #536176;
+  color: white;
+}
+
+.connect {
+  background: #285eaa;
+  color: white;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.color-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  align-items: center;
+}
+
+.color {
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+input[type="color"] {
+  width: 48px;
+  height: 40px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.patterns {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+}
+
+.pattern {
+  background: #283951;
+  color: white;
+  border: 1px solid #40536c;
+  padding: 18px 8px;
+}
+
+.pattern.active {
+  border: 2px solid #ffc857;
+  background: #344b68;
+}
+
+.pattern span {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: #ffc857;
+  margin: 12px 0;
+}
+
+.value {
+  color: #ffc857;
+  font-weight: bold;
+}
+
+.info {
+  font-size: 12px;
+  color: #aab7c9;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  color: #8291a7;
+  font-size: 12px;
+  padding: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">⚡ SMAK</div>
+  <div class="tagline">DECORATION LIGHTS · SMART LIGHTING</div>
+</header>
+
+<div class="container">
+
+  <div class="status">
+    <div>
+      <h2>Welcome!</h2>
+      <p class="info">Make every celebration shine.</p>
+    </div>
+    <span class="badge" id="status">DEMO MODE</span>
+  </div>
+
+  <section class="card main-light">
+    <h2>Smart Lighting Control</h2>
+    <div id="preview"></div>
+    <h3 id="lightName">RGB Lighting</h3>
+    <p class="info" id="powerText">Lights are ON</p>
+    <button class="power" id="powerBtn" onclick="togglePower()">
+      TURN LIGHTS OFF
+    </button>
+  </section>
+
+  <section class="card">
+    <h2>Connect Device</h2>
+    <p class="info">
+      Bluetooth connection will be added when we connect the ESP32 controller.
+    </p>
+    <button class="connect" onclick="connectDevice()">
+      Connect Bluetooth
+    </button>
+    <p class="info" id="connectionText" style="margin-top:12px">
+      No controller connected
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Choose Colour</h2>
+    <div class="color-row">
+      <button class="color" style="background:red"
+        onclick="setColor('#ff3030')"></button>
+      <button class="color" style="background:#24d8ff"
+        onclick="setColor('#24d8ff')"></button>
+      <button class="color" style="background:#35e879"
+        onclick="setColor('#35e879')"></button>
+      <button class="color" style="background:#a855f7"
+        onclick="setColor('#a855f7')"></button>
+      <button class="color" style="background:#ffd43b"
+        onclick="setColor('#ffd43b')"></button>
+      <input type="color" id="customColor"
+        value="#ff3030" onchange="setColor(this.value)">
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Lighting Patterns</h2>
+    <div class="patterns">
+      <button class="pattern active" onclick="setPattern('Static',this)">
+        <span>💡</span>Static
+      </button>
+      <button class="pattern" onclick="setPattern('Rainbow',this)">
+        <span>🌈</span>Rainbow
+      </button>
+      <button class="pattern" onclick="setPattern('Twinkle',this)">
+        <span>✨</span>Twinkle
+      </button>
+      <button class="pattern" onclick="setPattern('Chasing',this)">
+        <span>💫</span>Chasing
+      </button>
+      <button class="pattern" onclick="setPattern('Breathing',this)">
+        <span>🌊</span>Breathing
+      </button>
+      <button class="pattern" onclick="setPattern('Festival',this)">
+        <span>🎉</span>Festival
+      </button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Brightness Control</h2>
+    <div class="value" id="brightnessValue">70%</div>
+    <input type="range" min="1" max="100" value="70"
+      id="brightness" oninput="changeBrightness(this.value)">
+  </section>
+
+  <section class="card">
+    <h2>Animation Speed</h2>
+    <div class="value" id="speedValue">50%</div>
+    <input type="range" min="1" max="100" value="50"
+      id="speed" oninput="changeSpeed(this.value)">
+  </section>
+
+  <section class="card">
+    <h2>About SMAK</h2>
+    <p class="info">
+      SMAK Decoration Lights provides smart decorative lighting
+      solutions for house openings, festivals, weddings and
+      birthday celebrations.
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  © 2026 SMAK Decoration Lights · Prototype 1.0
+</footer>
+
+<script>
+let isOn = true;
+let selectedColor = "#ff3030";
+let selectedPattern = "Static";
+let brightness = 70;
+let speed = 50;
+
+function setColor(color) {
+  selectedColor = color;
+  document.getElementById("customColor").value = color;
+  updatePreview();
+}
+
+function updatePreview() {
+  const preview = document.getElementById("preview");
+
+  preview.style.background = selectedColor;
+  preview.style.boxShadow =
+    `0 0 ${brightness / 2}px ${selectedColor}`;
+
+  if (!isOn) {
+    preview.style.opacity = "0.08";
+  } else {
+    preview.style.opacity = "1";
+  }
+}
+
+function togglePower() {
+  isOn = !isOn;
+
+  const button = document.getElementById("powerBtn");
+
+  button.textContent = isOn
+    ? "TURN LIGHTS OFF"
+    : "TURN LIGHTS ON";
+
+  button.classList.toggle("off", !isOn);
+
+  document.getElementById("powerText").textContent =
+    isOn ? "Lights are ON" : "Lights are OFF";
+
+  updatePreview();
+}
+
+function setPattern(pattern, button) {
+  selectedPattern = pattern;
+
+  document.querySelectorAll(".pattern").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  button.classList.add("active");
+
+  document.getElementById("lightName").textContent =
+    pattern + " Mode";
+
+  const preview = document.getElementById("preview");
+
+  preview.style.animation = "none";
+
+  if (pattern === "Rainbow") {
+    preview.style.background =
+      "linear-gradient(45deg,red,orange,yellow,green,blue,violet)";
+  } else {
+    updatePreview();
+  }
+
+  if (pattern === "Twinkle") {
+    preview.style.animation =
+      `twinkle ${Math.max(0.3, 2 - speed / 60)}s infinite alternate`;
+  }
+
+  if (pattern === "Breathing") {
+    preview.style.animation =
+      `breathing ${Math.max(0.5, 4 - speed / 30)}s infinite alternate`;
+  }
+}
+
+function changeBrightness(value) {
+  brightness = Number(value);
+  document.getElementById("brightnessValue").textContent =
+    value + "%";
+  updatePreview();
+}
+
+function changeSpeed(value) {
+  speed = Number(value);
+  document.getElementById("speedValue").textContent =
+    value + "%";
+}
+
+function connectDevice() {
+  document.getElementById("connectionText").textContent =
+    "Demo only: ESP32 Bluetooth connection not configured yet.";
+  alert("Your SMAK app is ready for the next hardware integration stage!");
+}
+
+const animationStyle = document.createElement("style");
+animationStyle.textContent = `
+@keyframes twinkle {
+  from { opacity:0.25; transform:scale(0.85); }
+  to { opacity:1; transform:scale(1.1); }
+}
+@keyframes breathing {
+  from { opacity:0.2; transform:scale(0.85); }
+  to { opacity:1; transform:scale(1.1); }
+}`;
+document.head.appendChild(animationStyle);
+
+updatePreview();
+</script>
+
+</body>
+</html>
